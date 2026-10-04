@@ -14,7 +14,7 @@ export const contact = {
   phoneHref: 'tel:+88676211178',
   fax: '(07) 213-5530',
   email: 'fcheng.cpa@gmail.com',
-  address: '高雄市鳳山區華園路 95 巷 6 號',
+  address: '高雄市岡山區華園路 95 巷 6 號',
   // TODO: 填入營業時間，例如 '週一至週五 09:00–18:00'；留空則不顯示
   hours: '',
 };
