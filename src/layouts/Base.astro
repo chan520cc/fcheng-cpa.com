@@ -1,0 +1,146 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+import { site, contact, mailtoHref, services } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title, description = site.description } = Astro.props;
+const fullTitle = title ? `${title}｜${site.name}` : `${site.name}｜${site.slogan}`;
+const canonical = new URL(Astro.url.pathname.replace(/\.html$/, ''), Astro.site).href;
+const path = Astro.url.pathname.replace(/\.html$/, '');
+
+const nav = [
+  { href: '/services', label: '服務項目' },
+  { href: '/about', label: '會計師介紹' },
+  { href: '/contact', label: '聯絡我們' },
+];
+// 聯絡頁本身就是電話／Email 大卡，不需要底部固定列
+const showMobileBar = path !== '/contact';
+const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AccountingService',
+  name: site.name,
+  alternateName: site.nameEn,
+  url: site.url,
+  description: site.description,
+  telephone: '+886-7-621-1178',
+  faxNumber: '+886-7-213-5530',
+  email: contact.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '華園路 95 巷 6 號',
+    addressLocality: '鳳山區',
+    addressRegion: '高雄市',
+    addressCountry: 'TW',
+  },
+  areaServed: '高雄市',
+  founder: { '@type': 'Person', name: '陳志成', jobTitle: '會計師' },
+};
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#2c221a" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="zh_TW" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2">跳到主要內容</a>
+
+    <header class="sticky top-0 z-40 border-b border-ink/10 bg-paper/90 backdrop-blur">
+      <div class="container-page flex h-16 items-center justify-between">
+        <a href="/" class="font-serif text-xl font-bold">{site.name}</a>
+
+        <nav class="hidden items-center gap-8 md:flex" aria-label="主選單">
+          {
+            nav.map((item) => (
+              <a
+                href={item.href}
+                class:list={['text-[15px] transition-colors hover:text-copper', isActive(item.href) && 'text-copper']}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            ))
+          }
+          <a href={contact.phoneHref} class="btn-primary !px-4 !py-2 text-sm tabular-nums">
+            <Icon name="phone" class="size-4" />{contact.phone}
+          </a>
+        </nav>
+
+        <details class="group relative md:hidden">
+          <summary class="flex size-10 cursor-pointer list-none items-center justify-center rounded-md [&::-webkit-details-marker]:hidden" aria-label="開啟選單">
+            <Icon name="menu" class="size-6" />
+          </summary>
+          <nav class="absolute top-12 right-0 w-56 rounded-xl border border-ink/10 bg-white p-2 shadow-lg" aria-label="手機選單">
+            <a href="/" class="block rounded-lg px-4 py-3 hover:bg-cream">首頁</a>
+            {nav.map((item) => <a href={item.href} class="block rounded-lg px-4 py-3 hover:bg-cream">{item.label}</a>)}
+          </nav>
+        </details>
+      </div>
+    </header>
+
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+
+    <footer class:list={['bg-ink text-paper/80 md:pb-0', showMobileBar && 'pb-24']}>
+      <div class="container-page grid gap-10 py-14 md:grid-cols-3">
+        <div>
+          <p class="font-serif text-xl font-bold text-paper">{site.name}</p>
+          <p class="mt-2 text-sand">{site.slogan}</p>
+        </div>
+        <div>
+          <p class="mb-3 text-sm tracking-widest text-sand">服務項目</p>
+          <ul class="space-y-1.5">
+            {services.map((s) => <li><a href={`/services/${s.slug}`} class="hover:text-paper">{s.title}</a></li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="mb-3 text-sm tracking-widest text-sand">聯絡資訊</p>
+          <ul class="space-y-1.5">
+            <li>電話　<a href={contact.phoneHref} class="hover:text-paper">{contact.phone}</a></li>
+            <li>傳真　{contact.fax}</li>
+            <li>Email　<a href={mailtoHref} class="hover:text-paper">{contact.email}</a></li>
+            <li>地址　{contact.address}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-paper/10">
+        <p class="container-page py-5 text-sm text-paper/50">© 2017–{year} {site.name} {site.nameEn}</p>
+      </div>
+    </footer>
+
+    <!-- 手機版固定底部聯絡列 -->
+    {showMobileBar && (
+    <div class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-[1fr_auto] gap-2 border-t border-ink/10 bg-paper/95 p-3 backdrop-blur md:hidden" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom));">
+      <a href={contact.phoneHref} class="btn-primary !py-2.5"><Icon name="phone" />撥打電話</a>
+      <a href={mailtoHref} class="btn-ghost bg-white !px-5 !py-2.5" aria-label="寄送 Email"><Icon name="mail" />Email</a>
+    </div>
+    )}
+  </body>
+</html>

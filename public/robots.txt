@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fcheng-cpa.com/sitemap-index.xml

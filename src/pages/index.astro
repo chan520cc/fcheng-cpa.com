@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import ContactCta from '../components/ContactCta.astro';
+import { site, services, profile, contact } from '../data/site';
+import portrait from '../assets/portrait.jpg';
+
+---
+
+<Base>
+  <!-- Hero -->
+  <section class="relative overflow-hidden">
+    <div class="pointer-events-none absolute -top-40 -right-40 size-[36rem] rounded-full bg-sand/30 blur-3xl" aria-hidden="true"></div>
+    <div class="container-page relative grid items-center gap-12 py-20 md:grid-cols-[1.3fr_1fr] md:py-28">
+      <div>
+        <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl">{site.name}</h1>
+        <p class="mt-5 font-serif text-2xl text-copper sm:text-3xl">{site.slogan}</p>
+        <div class="mt-9 flex flex-wrap gap-3">
+          <a href={contact.phoneHref} class="btn-primary tabular-nums"><Icon name="phone" />來電諮詢 {contact.phone}</a>
+          <a href="/services" class="btn-ghost">了解服務項目<Icon name="arrow" class="size-4" /></a>
+        </div>
+      </div>
+
+      <div class="relative mx-auto w-full max-w-sm">
+        <div class="absolute inset-0 translate-x-4 translate-y-4 rounded-3xl bg-copper/20" aria-hidden="true"></div>
+        <Image src={portrait} alt="陳志成會計師" width={640} class="relative aspect-[4/5] w-full rounded-3xl object-cover object-top shadow-xl" loading="eager" />
+        <div class="absolute -bottom-6 left-6 rounded-2xl bg-white px-5 py-3 shadow-lg">
+          <p class="font-serif text-lg font-bold">{profile.name} 會計師</p>
+          <p class="text-sm text-ink-soft">經濟部中小企業處榮譽會計師</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 服務項目 -->
+  <section class="container-page py-20 md:py-28">
+    <p class="eyebrow">Services</p>
+    <h2 class="mt-3 text-3xl font-bold sm:text-4xl">服務項目</h2>
+    <div class="mt-12 grid gap-6 md:grid-cols-3">
+      {
+        services.map((s, i) => (
+          <a href={`/services/${s.slug}`} class="group flex flex-col rounded-2xl border border-ink/10 bg-white p-8 transition hover:-translate-y-1 hover:border-copper/40 hover:shadow-lg">
+            <span class="font-serif text-sm text-copper">0{i + 1}</span>
+            <h3 class="mt-3 text-2xl font-bold">{s.title}</h3>
+            <p class="mt-1 text-xs tracking-widest text-ink-soft uppercase">{s.titleEn}</p>
+            <ul class="mt-5 flex-1 space-y-1.5 text-[15px]">
+              {s.highlights.map((h) => (
+                <li class="flex gap-2">
+                  <span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-copper" />
+                  {h}
+                </li>
+              ))}
+            </ul>
+            <span class="mt-6 inline-flex items-center gap-1 text-sm font-medium text-copper">
+              了解更多
+              <Icon name="arrow" class="size-4 transition group-hover:translate-x-1" />
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- 會計師 -->
+  <section class="bg-ink text-paper">
+    <div class="container-page grid gap-12 py-20 md:grid-cols-2 md:py-24">
+      <div>
+        <p class="eyebrow !text-sand">About</p>
+        <h2 class="mt-3 text-3xl font-bold sm:text-4xl">會計師介紹</h2>
+        <p class="mt-6 font-serif text-2xl text-paper">{profile.name}</p>
+        <a href="/about" class="btn mt-8 border border-sand/40 text-sand hover:bg-sand hover:text-ink">
+          完整經歷<Icon name="arrow" class="size-4" />
+        </a>
+      </div>
+      <ul class="grid content-start gap-3 sm:grid-cols-2">
+        {
+          [...profile.experience.current.map((e) => `現任 ${e}`), ...profile.experience.past.filter((e) => !e.startsWith('勞工局')).map((e) => `曾任 ${e}`)].map((e) => (
+            <li class="rounded-xl border border-paper/10 bg-paper/5 px-5 py-4 text-[15px]">{e}</li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <ContactCta />
+</Base>

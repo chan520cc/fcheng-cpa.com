@@ -1,0 +1,74 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ContactCta from '../components/ContactCta.astro';
+import Icon from '../components/Icon.astro';
+import { profile } from '../data/site';
+import portrait from '../assets/portrait.jpg';
+---
+
+<Base title={`${profile.name} 會計師`} description={`${profile.name} 會計師 / ${profile.roles.join(' / ')}`}>
+  <section class="bg-cream">
+    <div class="container-page grid items-center gap-10 py-14 md:grid-cols-[18rem_1fr] md:py-20">
+      <Image src={portrait} alt={`${profile.name}會計師`} width={576} class="aspect-[4/5] w-full max-w-72 rounded-3xl object-cover object-top shadow-lg" loading="eager" />
+      <div>
+        <h1 class="text-4xl font-bold sm:text-5xl">{profile.name}<span class="ml-3 text-2xl text-ink-soft">{profile.title}</span></h1>
+        <p class="mt-5 flex flex-wrap gap-2">
+          {profile.roles.map((r) => <span class="rounded-full bg-white px-4 py-1.5 text-sm">{r}</span>)}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="container-page grid gap-14 py-16 md:grid-cols-2 md:py-20">
+    <section>
+      <h2 class="text-2xl font-bold">經歷</h2>
+      <ol class="mt-6 space-y-0 border-l-2 border-sand">
+        {
+          profile.experience.current.map((e) => (
+            <li class="relative py-2.5 pl-6">
+              <span class="absolute top-[1.15rem] -left-[7px] size-3 rounded-full bg-copper" />
+              <span class="mr-2 rounded bg-copper/10 px-1.5 py-0.5 text-xs text-copper">現任</span>{e}
+            </li>
+          ))
+        }
+        {
+          profile.experience.past.map((e) => (
+            <li class="relative py-2.5 pl-6 text-ink-soft">
+              <span class="absolute top-[1.15rem] -left-[7px] size-3 rounded-full border-2 border-sand bg-paper" />
+              <span class="mr-2 rounded bg-ink/5 px-1.5 py-0.5 text-xs">曾任</span>{e}
+            </li>
+          ))
+        }
+      </ol>
+
+      <h2 class="mt-14 text-2xl font-bold">專業證照</h2>
+      <ul class="mt-6 grid grid-cols-2 gap-3">
+        {profile.licenses.map((l) => <li class="rounded-xl border border-ink/10 bg-white px-4 py-3 text-center">{l}</li>)}
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold">專業著作</h2>
+      <ul class="mt-6 space-y-3">
+        {
+          profile.books.map((b) => (
+            <li class="flex items-center justify-between gap-4 rounded-xl border border-ink/10 bg-white px-5 py-4">
+              <div>
+                <p class="font-medium">{b.title}</p>
+                <p class="text-sm text-ink-soft">{b.publisher}</p>
+              </div>
+              {b.video && (
+                <a href={b.video} target="_blank" rel="noopener" class="inline-flex shrink-0 items-center gap-1 rounded-full bg-cream px-3 py-1.5 text-sm text-copper hover:bg-sand/40">
+                  <Icon name="play" class="size-4" />影片導讀
+                </a>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+
+  <ContactCta />
+</Base>

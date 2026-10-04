@@ -1,0 +1,52 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #2c221a;
+  --color-ink-soft: #5a4a3c;
+  --color-copper: #b46b2a;
+  --color-copper-dark: #8f5220;
+  --color-sand: #e1bb98;
+  --color-paper: #faf7f2;
+  --color-cream: #f3ece1;
+
+  --font-sans: 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', system-ui, sans-serif;
+  --font-serif: 'Noto Serif TC', 'Songti TC', 'PMingLiU', serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    line-height: 1.8;
+  }
+  h1, h2, h3 {
+    @apply font-serif;
+    line-height: 1.35;
+    letter-spacing: 0.02em;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-copper;
+  }
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-base font-medium transition-colors;
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+  .btn-primary {
+    @apply btn bg-copper text-white hover:bg-copper-dark;
+  }
+  .btn-ghost {
+    @apply btn border border-ink/20 text-ink hover:border-copper hover:text-copper;
+  }
+  .eyebrow {
+    @apply text-sm font-medium tracking-[0.2em] text-copper uppercase;
+  }
+}
